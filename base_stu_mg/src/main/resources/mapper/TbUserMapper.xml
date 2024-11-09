@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanf.stu.mapper.TbUserMapper">
+    <resultMap id="tbUserMap" type="com.lanf.stu.model.TbUser" autoMapping="true">
+    </resultMap>
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="columns">
+            x1.user_name
+            ,x1.password
+            ,x1.nickname
+            ,x1.create_time
+            ,x1.update_time
+            ,x1.is_deleted
+            ,x1.id
+        
+    </sql>
+    <sql id="middles">
+        from tb_user x1
+    </sql>
+    <sql id="conditions">
+                <if test="vo.userName != null and vo.userName != ''">
+              and x1.user_name like CONCAT('%',#{vo.userName},'%')
+                </if>
+                <if test="vo.password != null and vo.password != ''">
+              and x1.password like CONCAT('%',#{vo.password},'%')
+                </if>
+                <if test="vo.nickname != null and vo.nickname != ''">
+              and x1.nickname like CONCAT('%',#{vo.nickname},'%')
+                </if>
+        <if test="vo.createTimeBegin != null and vo.createTimeBegin != ''">
+              and x1.create_time >= #{vo.createTimeBegin}
+        </if>
+        <if test="vo.createTimeEnd != null and vo.createTimeEnd != ''">
+             and x1.create_time &lt;= #{vo.createTimeEnd}
+        </if>
+        <if test="vo.updateTimeBegin != null and vo.updateTimeBegin != ''">
+             and x1.create_time >= #{vo.updateTimeBegin}
+        </if>
+        <if test="vo.updateTimeEnd != null and vo.updateTimeEnd != ''">
+             and x1.create_time &lt;= #{vo.updateTimeEnd}
+        </if>
+             and x1.is_deleted = 0 order by x1.create_time desc
+    </sql>
+    <select id="selectPage" resultMap="tbUserMap">
+        select <include refid="columns" />
+        <include refid="middles" />
+        <where>
+            <include refid="conditions" />
+        </where>
+    </select>
+    <select id="queryList" resultMap="tbUserMap">
+        select <include refid="columns" />
+        <include refid="middles" />
+        <where>
+            <include refid="conditions" />
+        </where>
+    </select>
+</mapper>
